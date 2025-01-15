@@ -1,5 +1,5 @@
 'use client';
-import { Sparkles, Zap, BarChart, Layers, Bot, PenTool, Search, Database, Check } from 'lucide-react'
+import { Sparkles, Zap, BarChart, Layers, Bot, PenTool, Search, Database, Check, Image, } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Link from 'next/link'
 
@@ -32,7 +32,7 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 { title: 'Chatbot Assistant', icon: Bot, description: 'Engage customers with our intelligent chatbot.', path: '/chatbot' },
-                { title: 'Content Generator', icon: PenTool, description: 'Create high-quality content with AI assistance.', path: '/' },
+                { title: 'Image Generator', icon: Image, description: 'Create stunning images from text prompts using AI.', path: '/text2image' },
                 { title: 'Smart Search', icon: Search, description: 'Find information quickly with AI-enhanced search.', path: '/' },
                 { title: 'Data Analysis', icon: Database, description: 'Gain insights from your data using AI algorithms.', path: '/' },
                 { title: 'Image Recognition', icon: Sparkles, description: 'Identify and categorize images with AI precision.', path: '/' },
