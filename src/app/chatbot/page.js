@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import axios from 'axios';
+import { useToast } from '@/hooks/use-toast';
 
 function Page() {
+    const { toast } = useToast();
     const [messages, setMessages] = useState([]);
     const [msg, setMsg] = useState("");
     const [isTyping, setIsTyping] = useState(false);
@@ -32,8 +34,13 @@ function Page() {
                 data: MESSAGE
             })
             messages.push(res.data.data);
+            console.log(res.data.data.content);
         } catch (error) {
             console.log(error);
+            toast({
+                variant: "destructive",
+                description: error.response.data.data,
+            })
         } finally {
             setIsTyping(false);
         }
@@ -45,22 +52,35 @@ function Page() {
             <div className="flex flex-col h-screen max-w-2xl mx-auto p-4">
                 <h1 className="text-2xl font-bold mb-4">AI Chatbot</h1>
                 <ScrollArea className="flex-grow mb-4 p-4 border rounded-md">
-                    {messages.map((message, index) => (
-                        <div
-                            key={index}
-                            className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'
-                                }`}
-                        >
-                            <span
-                                className={`inline-block p-2 rounded-lg ${message.role === 'user'
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200 text-black'
+                    {messages.map((message, index) => {
+                        let msg;
+                        if (message.role != 'user') {
+                            msg = message.content.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+                            msg = msg.replace(/```(.*?)```/g, "<code>$1</code>");
+                            msg = msg.replace(/\n/g, "<br/>");
+                            msg = msg.replace(/\*(.*?)\*/g, "<i>$1</i>");
+                            msg = msg.replace(/__(.*?)__/g, "<u>$1</u>");
+
+                        } else {
+                            msg = message.content;
+                        }
+                        return (
+                            <div
+                                key={index}
+                                className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'
                                     }`}
                             >
-                                {message.content}
-                            </span>
-                        </div>
-                    ))}
+                                <span
+                                    className={`inline-block p-2 rounded-lg ${message.role === 'user'
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-gray-200 text-black'
+                                        }`}
+                                >
+                                    <p dangerouslySetInnerHTML={{ __html: msg }} />
+                                </span>
+                            </div>
+                        )
+                    })}
                     <div ref={(el) => { if (el) el.scrollIntoView({ behavior: 'smooth' }); }} />
                     {isTyping && (
                         <div className="text-left">
